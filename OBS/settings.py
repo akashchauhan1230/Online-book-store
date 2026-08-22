@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-vnpuwt4hc_lpc&n6djf@qziinb5^$iwp+b$tj)6e#p(%@g#6ug
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['online-book-store-akash.vercel.app', 'localhost', '127.0.0.1']
 
 
 # Application definition
