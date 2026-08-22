@@ -79,6 +79,7 @@ WSGI_APPLICATION = 'OBS.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+# pyrefly: ignore [missing-import]
 import dj_database_url
 
 DATABASES = {

@@ -10,11 +10,13 @@
     <div class="col-xl-10">
       <div class="card border-0 shadow-lg rounded-5 overflow-hidden bg-white">
         <div class="row g-0">
-          
+
           <!-- Left Column: Registration Form -->
           <div class="col-lg-7 p-4 p-sm-5">
             <div class="mb-4">
-              <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1 fw-bold mb-2">Join Book Walla</span>
+              <span
+                class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1 fw-bold mb-2">Join
+                Book Walla</span>
               <h2 class="fw-bold text-slate-900 mb-1">Create Your Account</h2>
               <p class="text-muted small">Unlock personal wishlists, order tracking, and member-only pricing.</p>
             </div>
@@ -23,43 +25,60 @@
               {% csrf_token %}
 
               <div class="mb-3">
-                <label for="name" class="form-label fw-semibold text-slate-700">Full Name <span class="text-danger">*</span></label>
+                <label for="name" class="form-label fw-semibold text-slate-700">Full Name <span
+                    class="text-danger">*</span></label>
                 <div class="input-group">
-                  <span class="input-group-text bg-light border-end-0 text-muted"><i class="fa-regular fa-user"></i></span>
-                  <input type="text" class="form-control form-control-lg bg-light border-start-0 fs-6" name="name" id="name" placeholder="Akash Chauhan" required>
+                  <span class="input-group-text bg-light border-end-0 text-muted"><i
+                      class="fa-regular fa-user"></i></span>
+                  <input type="text" class="form-control form-control-lg bg-light border-start-0 fs-6" name="name"
+                    id="name" placeholder="Enter Your Name" required>
                 </div>
               </div>
 
               <div class="mb-3">
-                <label for="email" class="form-label fw-semibold text-slate-700">Email Address <span class="text-danger">*</span></label>
+                <label for="email" class="form-label fw-semibold text-slate-700">Email Address <span
+                    class="text-danger">*</span></label>
                 <div class="input-group">
-                  <span class="input-group-text bg-light border-end-0 text-muted"><i class="fa-regular fa-envelope"></i></span>
-                  <input type="email" class="form-control form-control-lg bg-light border-start-0 fs-6" name="email" id="email" placeholder="you@example.com" required>
+                  <span class="input-group-text bg-light border-end-0 text-muted"><i
+                      class="fa-regular fa-envelope"></i></span>
+                  <input type="email" class="form-control form-control-lg bg-light border-start-0 fs-6" name="email"
+                    id="email" placeholder="Enter Your Email" required>
                 </div>
               </div>
 
               <div class="mb-3">
-                <label for="contactno" class="form-label fw-semibold text-slate-700">Mobile Number <span class="text-danger">*</span></label>
+                <label for="contactno" class="form-label fw-semibold text-slate-700">Mobile Number <span
+                    class="text-danger">*</span></label>
                 <div class="input-group">
-                  <span class="input-group-text bg-light border-end-0 text-muted"><i class="fa-solid fa-phone"></i></span>
-                  <input type="tel" class="form-control form-control-lg bg-light border-start-0 fs-6" name="contactno" id="contactno" placeholder="10-digit mobile number" required inputmode="numeric" pattern="[0-9]{10}" maxlength="10" minlength="10" oninput="this.value = this.value.replace(/\D/g, '').slice(0,10)">
+                  <span class="input-group-text bg-light border-end-0 text-muted"><i
+                      class="fa-solid fa-phone"></i></span>
+                  <input type="tel" class="form-control form-control-lg bg-light border-start-0 fs-6" name="contactno"
+                    id="contactno" placeholder="Enter Your Mobile Number" required inputmode="numeric"
+                    pattern="[0-9]{10}" maxlength="10" minlength="10"
+                    oninput="this.value = this.value.replace(/\D/g, '').slice(0,10)">
                 </div>
               </div>
 
               <div class="row g-3 mb-3">
                 <div class="col-sm-6">
-                  <label for="password" class="form-label fw-semibold text-slate-700">Password <span class="text-danger">*</span></label>
+                  <label for="password" class="form-label fw-semibold text-slate-700">Password <span
+                      class="text-danger">*</span></label>
                   <div class="input-group">
-                    <span class="input-group-text bg-light border-end-0 text-muted"><i class="fa-solid fa-lock"></i></span>
-                    <input type="password" class="form-control form-control-lg bg-light border-start-0 fs-6" name="password" id="password" placeholder="Create password" required>
+                    <span class="input-group-text bg-light border-end-0 text-muted"><i
+                        class="fa-solid fa-lock"></i></span>
+                    <input type="password" class="form-control form-control-lg bg-light border-start-0 fs-6"
+                      name="password" id="password" placeholder="Enter Your Password" required>
                   </div>
                 </div>
 
                 <div class="col-sm-6">
-                  <label for="cpassword" class="form-label fw-semibold text-slate-700">Confirm Password <span class="text-danger">*</span></label>
+                  <label for="cpassword" class="form-label fw-semibold text-slate-700">Confirm Password <span
+                      class="text-danger">*</span></label>
                   <div class="input-group">
-                    <span class="input-group-text bg-light border-end-0 text-muted"><i class="fa-solid fa-shield-check"></i></span>
-                    <input type="password" class="form-control form-control-lg bg-light border-start-0 fs-6" name="cpassword" id="cpassword" placeholder="Repeat password" required>
+                    <span class="input-group-text bg-light border-end-0 text-muted"><i
+                        class="fa-solid fa-shield-check"></i></span>
+                    <input type="password" class="form-control form-control-lg bg-light border-start-0 fs-6"
+                      name="cpassword" id="cpassword" placeholder="Confirm Your Password" required>
                   </div>
                 </div>
               </div>
@@ -67,7 +86,8 @@
               <div class="form-check mb-4">
                 <input class="form-check-input" type="checkbox" name="agree_terms" id="agree_terms" required checked>
                 <label class="form-check-label text-muted small" for="agree_terms">
-                  I agree to the <a href="#" class="text-success text-decoration-none fw-semibold">Terms of Service</a> & <a href="#" class="text-success text-decoration-none fw-semibold">Privacy Policy</a>.
+                  I agree to the <a href="#" class="text-success text-decoration-none fw-semibold">Terms of Service</a>
+                  & <a href="#" class="text-success text-decoration-none fw-semibold">Privacy Policy</a>.
                 </label>
               </div>
 
@@ -77,7 +97,7 @@
 
               <div class="text-center mt-3 pt-3 border-top">
                 <p class="text-muted small mb-0">
-                  Already have an account? 
+                  Already have an account?
                   <a href="{% url 'login' %}" class="fw-bold text-success text-decoration-none">Sign In here</a>
                 </p>
               </div>
@@ -85,7 +105,8 @@
           </div>
 
           <!-- Right Column: Member Benefits -->
-          <div class="col-lg-5 p-4 p-sm-5 d-flex flex-column justify-content-between" style="background: linear-gradient(135deg, #064e3b, #0f172a); color: #ffffff;">
+          <div class="col-lg-5 p-4 p-sm-5 d-flex flex-column justify-content-between"
+            style="background: linear-gradient(135deg, #064e3b, #0f172a); color: #ffffff;">
             <div>
               <span class="badge bg-success text-white px-3 py-2 rounded-pill fw-semibold mb-3">Member Privileges</span>
               <h3 class="fw-bold text-white mb-4">Why Readers Join Book Walla</h3>
@@ -97,7 +118,8 @@
                   </div>
                   <div>
                     <h5 class="fw-bold text-white mb-1">Exclusive Member Discounts</h5>
-                    <p class="text-slate-300 small mb-0">Get up to 30% extra off on curated bestsellers and flash deals.</p>
+                    <p class="text-slate-300 small mb-0">Get up to 30% extra off on curated bestsellers and flash deals.
+                    </p>
                   </div>
                 </div>
 
@@ -107,7 +129,8 @@
                   </div>
                   <div>
                     <h5 class="fw-bold text-white mb-1">1-Click Express Checkout</h5>
-                    <p class="text-slate-300 small mb-0">Save multiple delivery addresses for instant checkout anytime.</p>
+                    <p class="text-slate-300 small mb-0">Save multiple delivery addresses for instant checkout anytime.
+                    </p>
                   </div>
                 </div>
 
@@ -117,7 +140,8 @@
                   </div>
                   <div>
                     <h5 class="fw-bold text-white mb-1">Personal Wishlist</h5>
-                    <p class="text-slate-300 small mb-0">Save upcoming releases and receive price drop alerts automatically.</p>
+                    <p class="text-slate-300 small mb-0">Save upcoming releases and receive price drop alerts
+                      automatically.</p>
                   </div>
                 </div>
 
@@ -127,7 +151,8 @@
                   </div>
                   <div>
                     <h5 class="fw-bold text-white mb-1">Detailed Order Tracking</h5>
-                    <p class="text-slate-300 small mb-0">Monitor package dispatch and access full digital receipt history.</p>
+                    <p class="text-slate-300 small mb-0">Monitor package dispatch and access full digital receipt
+                      history.</p>
                   </div>
                 </div>
               </div>
@@ -135,7 +160,8 @@
 
             <div class="pt-4 mt-4 border-top border-secondary">
               <p class="text-slate-400 small mb-0">
-                <i class="fa-solid fa-shield-halved text-success me-1"></i> Your personal data is protected with 256-bit SSL encryption.
+                <i class="fa-solid fa-shield-halved text-success me-1"></i> Your personal data is protected with 256-bit
+                SSL encryption.
               </p>
             </div>
 
