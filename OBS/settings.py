@@ -133,8 +133,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 
-STRIPE_SECRET_KEY = 'sk_test_...' # Removed for security
-STRIPE_PUBLISHABLE_KEY = 'your_publishable_key'
+import os
+STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', 'sk_test_...')
+STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY', 'your_publishable_key')
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -142,7 +143,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'mediconnect7781@gmail.com'
-EMAIL_HOST_PASSWORD = 'YOUR_EMAIL_APP_PASSWORD' # Removed for security
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'YOUR_EMAIL_APP_PASSWORD')
 
 
 
