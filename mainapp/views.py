@@ -111,7 +111,7 @@ def register(request):
             messages.success(request, "Registration is done successfully! Please log in.")
             return redirect('login')
         except Exception as e:
-            messages.error(request, "An error occurred during registration. Please try again.")
+            messages.error(request, f"Registration error: {str(e)}")
             return redirect('register')
     return render(request, 'register.html', context)
 
