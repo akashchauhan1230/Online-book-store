@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-vnpuwt4hc_lpc&n6djf@qziinb5^$iwp+b$tj)6e#p(%@g#6ug
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['online-book-store-akash.vercel.app', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -82,19 +82,31 @@ WSGI_APPLICATION = 'OBS.wsgi.application'
 # pyrefly: ignore [missing-import]
 import dj_database_url
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+import shutil
 
-if 'DATABASE_URL' in os.environ:
-    DATABASES['default'] = dj_database_url.config(
-        default=os.environ.get('DATABASE_URL'),
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
+# Check if we are running on Vercel
+if 'VERCEL' in os.environ:
+    tmp_db_path = '/tmp/db.sqlite3'
+    # Copy the database to the writable /tmp directory if it's not already there
+    if not os.path.exists(tmp_db_path):
+        source_db_path = BASE_DIR / 'db.sqlite3'
+        if os.path.exists(source_db_path):
+            shutil.copyfile(source_db_path, tmp_db_path)
+    
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': tmp_db_path,
+        }
+    }
+else:
+    # Use normal local database if not on Vercel
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
