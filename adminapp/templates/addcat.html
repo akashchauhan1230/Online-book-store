@@ -1,0 +1,60 @@
+{% extends 'adminbase.html' %}
+{% block admin %}
+
+<div class="container-fluid px-0 mb-5 pb-4">
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+      <h3 class="fw-bold text-slate-900 mb-1">Add Book Category</h3>
+      <p class="text-muted small mb-0">Create a new literary genre or categorization tag for books</p>
+    </div>
+    <a href="{% url 'viewcat' %}" class="btn btn-outline-secondary rounded-pill px-4 fw-semibold">
+      <i class="ti ti-list me-1"></i> View Categories
+    </a>
+  </div>
+
+  <div class="row justify-content-center mx-0">
+    <div class="col-lg-8 col-xl-7 px-0">
+      <div class="card border-0 shadow-sm rounded-4 bg-white overflow-hidden">
+        <div class="p-4 p-md-5">
+          <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom">
+            <div class="brand-icon-box" style="width: 48px; height: 48px; font-size: 1.25rem; background: linear-gradient(135deg, #10b981, #059669); color: #fff; border-radius: 14px; display: flex; align-items: center; justify-content: center;">
+              <i class="ti ti-category"></i>
+            </div>
+            <div>
+              <h5 class="fw-bold text-slate-900 mb-0">Category Details</h5>
+              <p class="text-muted small mb-0">Fill in the information below to add a new category</p>
+            </div>
+          </div>
+
+          <form method="post" class="row g-4">
+            {% csrf_token %}
+
+            <div class="col-12">
+              <label for="name" class="form-label fw-semibold text-slate-700">Category Name <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <span class="input-group-text bg-light border-end-0 text-muted"><i class="ti ti-folder"></i></span>
+                <input type="text" class="form-control form-control-lg bg-light border-start-0 fs-6" name="name" id="name" placeholder="e.g. Vedic Scriptures, Science Fiction, Self Help" required style="box-shadow: none;">
+              </div>
+            </div>
+
+            <div class="col-12">
+              <label for="description" class="form-label fw-semibold text-slate-700">Category Description</label>
+              <textarea class="form-control bg-light fs-6" name="description" id="description" rows="4" placeholder="Brief summary of books categorized under this section..." style="box-shadow: none; resize: vertical;"></textarea>
+            </div>
+
+            <div class="col-12 mt-4 pt-3 border-top d-flex flex-wrap gap-3">
+              <button type="submit" class="btn btn-success btn-lg rounded-pill px-5 fw-bold shadow-sm">
+                <i class="ti ti-check me-1"></i> Save Category
+              </button>
+              <a href="{% url 'viewcat' %}" class="btn btn-light btn-lg rounded-pill px-4 fw-semibold text-muted border">
+                Cancel
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,157 @@
+{% extends 'userbase.html' %}
+{% load static %}
+
+{% block title %}Shopping Cart - Book Walla{% endblock %}
+
+{% block user %}
+
+<div class="container-fluid px-0 mb-5 pb-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h3 class="fw-bold text-slate-900 mb-1">My Shopping Cart</h3>
+      <p class="text-muted small mb-0">Review your selected items before proceeding to secure payment</p>
+    </div>
+    <a href="{% url 'index' %}" class="btn btn-outline-success rounded-pill px-4 fw-semibold">
+      <i class="fa-solid fa-store me-1"></i> Continue Shopping
+    </a>
+  </div>
+
+  {% if items %}
+  <div class="row g-4">
+    <!-- Cart Items Table / List -->
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white mb-4">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="bg-light">
+              <tr>
+                <th class="py-3 px-4 text-uppercase text-muted small fw-bold">Book Details</th>
+                <th class="py-3 text-uppercase text-muted small fw-bold text-center">Category</th>
+                <th class="py-3 text-uppercase text-muted small fw-bold text-center">Price</th>
+                <th class="py-3 text-uppercase text-muted small fw-bold text-center">Qty</th>
+                <th class="py-3 text-uppercase text-muted small fw-bold text-center">Total</th>
+                <th class="py-3 px-4 text-uppercase text-muted small fw-bold text-end">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for i in items %}
+              <tr>
+                <!-- Book Info -->
+                <td class="py-3 px-4">
+                  <div class="d-flex align-items-center gap-3">
+                    {% if i.book.cover_image %}
+                      <img src="{{ i.book.cover_image.url }}" alt="{{ i.book.title }}" class="rounded-3 shadow-sm" style="width: 55px; height: 75px; object-fit: cover;">
+                    {% else %}
+                      <img src="{% static 'img/default_cover.jpg' %}" alt="Cover" class="rounded-3 shadow-sm" style="width: 55px; height: 75px; object-fit: cover;">
+                    {% endif %}
+                    <div>
+                      <h6 class="fw-bold text-slate-900 mb-1">{{ i.book.title }}</h6>
+                      <p class="text-muted small mb-0">by {{ i.book.author }}</p>
+                    </div>
+                  </div>
+                </td>
+
+                <!-- Category -->
+                <td class="text-center">
+                  <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1 small">
+                    {{ i.book.category.name|default:"General" }}
+                  </span>
+                </td>
+
+                <!-- Unit Price -->
+                <td class="text-center fw-semibold text-slate-800">
+                  ₹{{ i.book.price }}
+                </td>
+
+                <!-- Quantity -->
+                <td class="text-center">
+                  <span class="badge bg-light text-dark border px-3 py-2 fw-bold fs-6">
+                    {{ i.quantity }}
+                  </span>
+                </td>
+
+                <!-- Subtotal -->
+                <td class="text-center fw-bold text-success fs-6">
+                  ₹{{ i.get_total_price|default:i.book.price }}
+                </td>
+
+                <!-- Remove -->
+                <td class="py-3 px-4 text-end">
+                  <a href="{% url 'removeitem' id=i.book.id %}" class="btn btn-outline-danger btn-sm rounded-circle p-2" title="Remove Book" onclick="return confirm('Remove this item from your cart?');">
+                    <i class="fa-solid fa-trash-can"></i>
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cart Summary Sidebar -->
+    <div class="col-lg-4">
+      <div class="card border-0 shadow-sm rounded-4 p-4 bg-white sticky-top" style="top: 100px;">
+        <h4 class="fw-bold text-slate-900 mb-4 pb-2 border-bottom">
+          <i class="ti ti-receipt text-success me-2"></i> Order Summary
+        </h4>
+
+        <div class="d-flex justify-content-between mb-2 text-slate-600">
+          <span>Items Subtotal</span>
+          <span class="fw-semibold text-slate-900">₹{{ total }}</span>
+        </div>
+
+        <div class="d-flex justify-content-between mb-2 text-slate-600">
+          <span>Estimated Shipping</span>
+          <span class="text-success fw-semibold"><i class="fa-solid fa-bolt me-1"></i> FREE Delivery</span>
+        </div>
+
+        <div class="d-flex justify-content-between mb-3 text-slate-600">
+          <span>GST / Taxes</span>
+          <span class="fw-semibold text-slate-900">Included</span>
+        </div>
+
+        <hr class="my-3">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <span class="fs-5 fw-bold text-slate-900">Total Amount:</span>
+          <span class="fs-4 fw-extrabold text-success">₹{{ total }}</span>
+        </div>
+
+        <a href="{% url 'checkout' %}" class="btn btn-success btn-lg rounded-pill w-100 fw-bold shadow-md py-3 mb-3">
+          <i class="fa-solid fa-lock me-2"></i> Proceed to Checkout
+        </a>
+
+        <div class="p-3 bg-light rounded-3 text-center border">
+          <p class="text-muted small mb-2"><i class="fa-solid fa-shield-halved text-success me-1"></i> 100% Encrypted & Safe Checkout</p>
+          <div class="d-flex justify-content-center gap-2 text-muted fs-4">
+            <i class="fa-brands fa-stripe text-primary"></i>
+            <i class="fa-brands fa-cc-visa text-primary"></i>
+            <i class="fa-brands fa-cc-mastercard text-danger"></i>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <!-- Empty Cart State -->
+  <div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white my-4">
+    <div class="value-prop-icon mx-auto mb-4" style="width: 80px; height: 80px; font-size: 2.5rem;">
+      <i class="ti ti-shopping-cart text-success"></i>
+    </div>
+    <h3 class="fw-bold text-slate-900 mb-2">Your Shopping Cart is Empty</h3>
+    <p class="text-muted mx-auto mb-4" style="max-width: 450px;">
+      Explore our rich library of books and start adding your favorite titles to your personal collection.
+    </p>
+    <div>
+      <a href="{% url 'index' %}" class="btn btn-success btn-lg rounded-pill px-5 fw-bold shadow-sm">
+        <i class="fa-solid fa-book-open me-2"></i> Start Shopping Now
+      </a>
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+
+{% endblock %}

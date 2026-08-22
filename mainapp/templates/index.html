@@ -1,0 +1,385 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Book Walla - Explore Bestselling & Sacred Books{% endblock %}
+
+{% block main %}
+
+<!-- Hero Slider Section -->
+<div id="heroCarousel" class="carousel slide hero-carousel" data-bs-ride="carousel">
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+  </div>
+
+  <div class="carousel-inner">
+    <!-- Slide 1 -->
+    <div class="carousel-item active" data-bs-interval="4500">
+      <img src="{% static 'img/envato-labs-ai-e8f52a42-0bd8-4196-8037-7181d03dbb34.jpg' %}" alt="Explore Library">
+      <div class="carousel-caption">
+        <span class="slider-badge"><i class="fa-solid fa-sparkles me-1"></i> Special Collection</span>
+        <h2 class="slider-title">Welcome to Book Walla</h2>
+        <p class="slider-desc">Discover thousands of handpicked sacred texts, academic treasures, and global bestsellers.</p>
+        <div class="d-flex flex-wrap gap-2">
+          <a href="{% url 'category' %}" class="btn btn-success rounded-pill px-4 py-2 fw-bold">
+            <i class="fa-solid fa-bag-shopping me-1"></i> Explore Books
+          </a>
+          <a href="{% url 'about' %}" class="btn btn-outline-light rounded-pill px-4 py-2 fw-semibold">
+            Learn More
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 2 -->
+    <div class="carousel-item" data-bs-interval="4500">
+      <img src="{% static 'img/envato-labs-ai-8aa06ebc-5b18-4f58-afd8-69dc8c7c1069.jpg' %}" alt="New Arrivals">
+      <div class="carousel-caption">
+        <span class="slider-badge"><i class="fa-solid fa-fire me-1"></i> Fresh Releases</span>
+        <h2 class="slider-title">New Arrivals Every Week</h2>
+        <p class="slider-desc">Stay ahead of the curve with our curated new releases and limited edition copies.</p>
+        <div class="d-flex flex-wrap gap-2">
+          <a href="{% url 'category' %}" class="btn btn-success rounded-pill px-4 py-2 fw-bold">
+            Shop New Arrivals
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 3 -->
+    <div class="carousel-item" data-bs-interval="4500">
+      <img src="{% static 'img/envato-labs-ai-5751064f-83ca-4af4-b836-aba68d1a8574.jpg' %}" alt="Exclusive Discounts">
+      <div class="carousel-caption">
+        <span class="slider-badge"><i class="fa-solid fa-percent me-1"></i> Mega Savings</span>
+        <h2 class="slider-title">Up to 40% Off Classic Titles</h2>
+        <p class="slider-desc">Expand your personal library today with incredible limited-time discounts.</p>
+        <div class="d-flex flex-wrap gap-2">
+          <a href="{% url 'category' %}" class="btn btn-success rounded-pill px-4 py-2 fw-bold">
+            Grab Deals Now
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+
+<!-- Value Propositions Section -->
+<section class="icon-container">
+  <div class="row g-3 g-md-4">
+    <div class="col-6 col-lg-3">
+      <div class="value-prop-card">
+        <div class="value-prop-icon">
+          <i class="fa-solid fa-truck-fast"></i>
+        </div>
+        <h3>Express Delivery</h3>
+        <p>Free fast shipping across India on orders over ₹499</p>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="value-prop-card">
+        <div class="value-prop-icon">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <h3>Secure Payment</h3>
+        <p>100% encrypted & secure checkout via Stripe</p>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="value-prop-card">
+        <div class="value-prop-icon">
+          <i class="fa-solid fa-arrow-rotate-left"></i>
+        </div>
+        <h3>Easy 10-Day Returns</h3>
+        <p>Hassle-free replacement policy on all books</p>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="value-prop-card">
+        <div class="value-prop-icon">
+          <i class="fa-solid fa-headset"></i>
+        </div>
+        <h3>24/7 Support</h3>
+        <p>Dedicated reading advisors ready to assist anytime</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Books Carousel Section -->
+<section class="my-5">
+  <div class="section-header-wrapper">
+    <span class="section-pill"><i class="fa-solid fa-award me-1"></i> Handpicked</span>
+    <h2 class="section-title">Featured Books</h2>
+    <p class="section-subtitle">Explore reader favorites, critical acclaim titles, and spiritual masterpieces.</p>
+  </div>
+
+  <div class="splide" id="featured" aria-label="Featured Books Carousel">
+    <div class="splide__track">
+      <ul class="splide__list">
+        {% for b in books %}
+        <li class="splide__slide">
+          <div class="book-card-wrapper">
+            <div class="book-card">
+              <span class="book-badge-discount">Bestseller</span>
+              
+              <a href="{% url 'book_details' id=b.id %}" class="book-img-container text-decoration-none">
+                {% if b.cover_image %}
+                  <img src="{{ b.cover_image.url }}" class="book-img" alt="{{ b.title }}">
+                {% else %}
+                  <img src="{% static 'img/default_cover.jpg' %}" class="book-img" alt="Default Book Cover">
+                {% endif %}
+              </a>
+
+              <div class="book-content">
+                <span class="book-category-tag">{{ b.category.name|default:"Literature" }}</span>
+                <a href="{% url 'book_details' id=b.id %}" class="text-decoration-none">
+                  <h3 class="book-card-title" title="{{ b.title }}">{{ b.title }}</h3>
+                </a>
+                <p class="book-author">by {{ b.author|default:"Renowned Author" }}</p>
+                
+                <div class="rating-stars">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star-half-alt"></i>
+                  <span class="text-muted ms-1" style="font-size: 0.8rem;">(4.8)</span>
+                </div>
+
+                <div class="book-price-row">
+                  <span class="book-current-price">₹{{ b.price }}</span>
+                  {% if b.original_price %}
+                  <span class="book-original-price">₹{{ b.original_price }}</span>
+                  {% endif %}
+                </div>
+
+                <form action="{% url 'addtocart' id=b.id %}" method="post">
+                  {% csrf_token %}
+                  <input type="hidden" name="quantity" value="1">
+                  <button type="submit" class="btn-add-cart">
+                    <i class="fa-solid fa-cart-plus"></i> Add to Cart
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </li>
+        {% empty %}
+        <li class="splide__slide">
+          <div class="text-center p-5 bg-white rounded-4 border">
+            <i class="fa-solid fa-book-open text-muted fs-1 mb-2"></i>
+            <p class="text-muted">No featured books available at the moment.</p>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- New Arrivals Slider Section -->
+<section class="my-5 pt-3">
+  <div class="section-header-wrapper">
+    <span class="section-pill"><i class="fa-solid fa-bolt me-1"></i> Fresh In Stock</span>
+    <h2 class="section-title">New Arrivals</h2>
+    <p class="section-subtitle">Hot off the press and freshly stocked on our shelves.</p>
+  </div>
+
+  <div class="splide" id="new_arrivals" aria-label="New Arrivals Carousel">
+    <div class="splide__track">
+      <ul class="splide__list">
+        {% for a in books %}
+        <li class="splide__slide">
+          <a href="{% url 'book_details' id=a.id %}" class="new-arrivals-box">
+            {% if a.cover_image %}
+              <img src="{{ a.cover_image.url }}" class="new-arrivals-img" alt="{{ a.title }}">
+            {% else %}
+              <img src="{% static 'img/default_cover.jpg' %}" class="new-arrivals-img" alt="Default Cover">
+            {% endif %}
+            <div class="flex-grow-1 overflow-hidden">
+              <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill mb-1" style="font-size: 0.72rem;">New Edition</span>
+              <h4 class="new-arrivals-title-text text-truncate">{{ a.title }}</h4>
+              <p class="text-muted small mb-1">by {{ a.author }}</p>
+              <div class="d-flex align-items-center gap-2">
+                <span class="new-arrivals-price">₹{{ a.price }}</span>
+                {% if a.original_price %}
+                <span class="text-muted small text-decoration-line-through">₹{{ a.original_price }}</span>
+                {% endif %}
+              </div>
+            </div>
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Newsletter & Updates Banner -->
+<section class="subscribe-section">
+  <div class="subscribe-content">
+    <h2>Join 50,000+ Book Lovers</h2>
+    <p>Subscribe for weekly book recommendations, exclusive author interviews, and members-only flash discounts.</p>
+    <form class="subscribe-form" onsubmit="event.preventDefault(); alert('Thank you for subscribing to Book Walla!');">
+      <input type="email" class="subscribe-input" placeholder="Enter your email address..." required>
+      <button type="submit" class="subscribe-btn">
+        <i class="fa-solid fa-paper-plane me-1"></i> Subscribe
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- Curated Blogs Section -->
+<section class="my-5">
+  <div class="section-header-wrapper">
+    <span class="section-pill"><i class="fa-solid fa-feather-pointed me-1"></i> Insights</span>
+    <h2 class="section-title">Our Literary Journal</h2>
+    <p class="section-subtitle">Articles, deep-dives into literature, and reading tips from book experts.</p>
+  </div>
+
+  <div class="row g-4">
+    <!-- Blog 1 -->
+    <div class="col-md-4">
+      <article class="blog-card">
+        <img src="{% static 'img/blog2.jpg' %}" alt="The Learner's Journey">
+        <div class="card-body">
+          <span class="badge bg-light text-success border rounded-pill mb-2 align-self-start">Self Development</span>
+          <h3 class="card-title">The Learner’s Journey</h3>
+          <p class="card-text">
+            Blending modern technology, coding, and traditional philosophies to accelerate lifelong learning and cognitive growth.
+          </p>
+          <a href="{% url 'about' %}" class="btn btn-outline-success rounded-pill px-3 py-2 fw-semibold align-self-start">
+            Read Article <i class="fa-solid fa-arrow-right ms-1"></i>
+          </a>
+        </div>
+      </article>
+    </div>
+
+    <!-- Blog 2 -->
+    <div class="col-md-4">
+      <article class="blog-card">
+        <img src="{% static 'img/blog3.jpg' %}" alt="Designing Harmony">
+        <div class="card-body">
+          <span class="badge bg-light text-success border rounded-pill mb-2 align-self-start">Art & Culture</span>
+          <h3 class="card-title">Designing Harmony</h3>
+          <p class="card-text">
+            Exploring how traditional Indian aesthetic principles, mandalas, and natural textures inspire contemporary design layouts.
+          </p>
+          <a href="{% url 'about' %}" class="btn btn-outline-success rounded-pill px-3 py-2 fw-semibold align-self-start">
+            Read Article <i class="fa-solid fa-arrow-right ms-1"></i>
+          </a>
+        </div>
+      </article>
+    </div>
+
+    <!-- Blog 3 -->
+    <div class="col-md-4">
+      <article class="blog-card">
+        <img src="{% static 'img/blog5.jpg' %}" alt="Tech Meets Tradition">
+        <div class="card-body">
+          <span class="badge bg-light text-success border rounded-pill mb-2 align-self-start">Ancient Wisdom</span>
+          <h3 class="card-title">Tech Meets Tradition</h3>
+          <p class="card-text">
+            Preserving classical manuscripts through modern digital archiving while making holy scriptures accessible to every smartphone.
+          </p>
+          <a href="{% url 'about' %}" class="btn btn-outline-success rounded-pill px-3 py-2 fw-semibold align-self-start">
+            Read Article <i class="fa-solid fa-arrow-right ms-1"></i>
+          </a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- Customer Reviews Section -->
+<section class="my-5 py-4">
+  <div class="section-header-wrapper">
+    <span class="section-pill"><i class="fa-solid fa-heart me-1"></i> Testimonials</span>
+    <h2 class="section-title">What Our Readers Say</h2>
+    <p class="section-subtitle">Real experiences from our passionate community of book lovers.</p>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="review-card">
+        <img src="{% static 'img/Prashant.png' %}" class="review-avatar" alt="Prashant Maurya" onerror="this.src='https://ui-avatars.com/api/?name=Prashant+Maurya&background=10b981&color=fff'">
+        <h4 class="fw-bold fs-5 mb-1">Prashant Maurya</h4>
+        <p class="text-muted small mb-2">Verified Buyer</p>
+        <p class="text-muted" style="font-size: 0.95rem; line-height: 1.6;">
+          “The website is beautifully responsive, and the books arrived in pristine condition with eco-friendly packaging. Seamless checkout experience!”
+        </p>
+        <div class="rating-stars mb-0">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="review-card">
+        <img src="{% static 'img/sumit.png' %}" class="review-avatar" alt="Sumit Patel" onerror="this.src='https://ui-avatars.com/api/?name=Sumit+Patel&background=10b981&color=fff'">
+        <h4 class="fw-bold fs-5 mb-1">Sumit Patel</h4>
+        <p class="text-muted small mb-2">Literature Enthusiast</p>
+        <p class="text-muted" style="font-size: 0.95rem; line-height: 1.6;">
+          “Found rare translations of sacred texts that I couldn't find anywhere else. The prices are unbeatable and customer support was incredibly polite.”
+        </p>
+        <div class="rating-stars mb-0">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="review-card">
+        <img src="{% static 'img/ashish.png' %}" class="review-avatar" alt="Ashish Kumar" onerror="this.src='https://ui-avatars.com/api/?name=Ashish+Kumar&background=10b981&color=fff'">
+        <h4 class="fw-bold fs-5 mb-1">Ashish Kumar</h4>
+        <p class="text-muted small mb-2">Regular Customer</p>
+        <p class="text-muted" style="font-size: 0.95rem; line-height: 1.6;">
+          “From ordering to tracking and delivery in just 2 days. The book quality and binding exceeded all my expectations. Highly recommended!”
+        </p>
+        <div class="rating-stars mb-0">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star-half-alt"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Promo Video Showcase Section -->
+<section class="my-5">
+  <div class="section-header-wrapper">
+    <span class="section-pill"><i class="fa-solid fa-play me-1"></i> Behind The Scenes</span>
+    <h2 class="section-title">Experience Book Walla</h2>
+    <p class="section-subtitle">A glimpse into our mission to bring knowledge and storytelling to millions.</p>
+  </div>
+
+  <div class="video-frame">
+    <video autoplay muted loop playsinline class="w-100" style="max-height: 480px; object-fit: cover; display: block;">
+      <source src="{% static 'img/video.mp4' %}" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+</section>
+
+{% endblock main %}

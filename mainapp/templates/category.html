@@ -1,0 +1,434 @@
+{% extends 'base.html' %}
+{% load static %}
+{% static 'img/default_cover.jpg' as default_cover %}
+
+{% block title %}Book Categories - Book Walla{% endblock %}
+
+{% block main %}
+
+<div class="container-fluid py-4 px-3 px-md-4">
+  <!-- Page Header -->
+  <div class="section-header-wrapper mb-4 text-center">
+    <span class="section-pill"><i class="fa-solid fa-layer-group me-1"></i> Browse Library</span>
+    <h1 class="section-title">Explore by Category</h1>
+    <p class="section-subtitle">Find your next favorite read from our curated collection of spiritual scriptures, sci-fi
+      masterpieces, and timeless fiction.</p>
+  </div>
+
+  <!-- Category Filter Pills -->
+  <div class="d-flex flex-wrap justify-content-center gap-2 mb-5">
+    <button class="btn btn-success rounded-pill px-4 py-2 fw-semibold category-filter-btn active" data-filter="all">
+      <i class="fa-solid fa-border-all me-1"></i> All Collections
+    </button>
+    {% if categories %}
+    {% for cat in categories %}
+    <button class="btn btn-outline-success rounded-pill px-4 py-2 fw-semibold category-filter-btn"
+      data-filter="cat-{{ cat.id }}">
+      <i class="fa-solid fa-bookmark me-1"></i> {{ cat.name }}
+    </button>
+    {% endfor %}
+    {% else %}
+    <button class="btn btn-outline-success rounded-pill px-4 py-2 fw-semibold category-filter-btn" data-filter="holy">
+      <i class="fa-solid fa-om me-1"></i> Holy & Spiritual Books
+    </button>
+    <button class="btn btn-outline-success rounded-pill px-4 py-2 fw-semibold category-filter-btn" data-filter="scifi">
+      <i class="fa-solid fa-robot me-1"></i> Sci-Fi & Fantasy
+    </button>
+    <button class="btn btn-outline-success rounded-pill px-4 py-2 fw-semibold category-filter-btn"
+      data-filter="selfhelp">
+      <i class="fa-solid fa-brain me-1"></i> Self Development
+    </button>
+    <button class="btn btn-outline-success rounded-pill px-4 py-2 fw-semibold category-filter-btn"
+      data-filter="academic">
+      <i class="fa-solid fa-graduation-cap me-1"></i> Academic & Tech
+    </button>
+    {% endif %}
+  </div>
+
+  {% if categories %}
+  <!-- Dynamic Categories from Database -->
+  {% for cat in categories %}
+  <div class="category-block mb-5" data-category="cat-{{ cat.id }}">
+    <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom flex-wrap gap-2">
+      <div class="d-flex align-items-center gap-3">
+        <div class="brand-icon-box"
+          style="width: 44px; height: 44px; font-size: 1.15rem; background: linear-gradient(135deg, #10b981, #059669); color: #fff; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+          <i class="fa-solid fa-folder-open"></i>
+        </div>
+        <div>
+          <h3 class="fw-bold mb-0 text-slate-900">{{ cat.name }}</h3>
+          <p class="text-muted small mb-0">{{ cat.description|default:"Browse titles in this collection" }}</p>
+        </div>
+      </div>
+      <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2">
+        {{ cat.book_set.count|default:"0" }} Titles Available
+      </span>
+    </div>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+      {% for b in cat.book_set.all %}
+      <div class="col">
+        <div class="book-card-wrapper">
+          <div class="book-card">
+            {% if b.original_price and b.price and b.original_price > b.price %}
+            <span class="book-badge-discount">Sale</span>
+            {% endif %}
+
+            <a href="{% url 'book_details' id=b.id %}" class="book-img-container text-decoration-none">
+              {% if b.cover_image %}
+              <img src="{{ b.cover_image.url }}" alt="{{ b.title }}" class="book-img"
+                onerror="this.onerror=null; this.src='{{ default_cover }}';">
+              {% else %}
+              <img src="{% static 'img/default_cover.jpg' %}" alt="{{ b.title }}" class="book-img">
+              {% endif %}
+            </a>
+
+            <div class="book-content">
+              <span class="book-category-tag">{{ cat.name }}</span>
+              <a href="{% url 'book_details' id=b.id %}" class="text-decoration-none">
+                <h4 class="book-card-title" title="{{ b.title }}">{{ b.title }}</h4>
+              </a>
+              <p class="book-author" title="{{ b.author }}">by {{ b.author|default:"Renowned Author" }}</p>
+
+              <div class="rating-stars">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                  class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                <span class="text-muted ms-1 small">(4.8)</span>
+              </div>
+
+              <div class="book-price-row">
+                <span class="book-current-price">₹{{ b.price }}</span>
+                {% if b.original_price %}
+                <span class="book-original-price">₹{{ b.original_price }}</span>
+                {% endif %}
+              </div>
+
+              <form action="{% url 'addtocart' id=b.id %}" method="post" class="mt-auto w-100">
+                {% csrf_token %}
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit" class="btn-add-cart">
+                  <i class="fa-solid fa-cart-plus"></i> Add to Cart
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12">
+        <div class="p-4 bg-light rounded-4 text-center text-muted">
+          <i class="fa-solid fa-book-open fs-2 mb-2 d-block text-secondary opacity-50"></i>
+          <p class="mb-0">No books available in this category yet.</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+
+  {% else %}
+  <!-- Curated Demo Collection if database is not yet populated -->
+  <!-- Category Section: Holy Books -->
+  <div class="category-block mb-5" data-category="holy">
+    <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom flex-wrap gap-2">
+      <div class="d-flex align-items-center gap-3">
+        <div class="brand-icon-box"
+          style="width: 44px; height: 44px; font-size: 1.15rem; background: linear-gradient(135deg, #10b981, #059669); color: #fff; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+          <i class="fa-solid fa-om"></i>
+        </div>
+        <div>
+          <h3 class="fw-bold mb-0 text-slate-900">Holy & Spiritual Books</h3>
+          <p class="text-muted small mb-0">Timeless sacred texts, philosophical translations, and commentaries</p>
+        </div>
+      </div>
+      <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2">4 Titles
+        Available</span>
+    </div>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+      <!-- Item 1 -->
+      <div class="col">
+        <div class="book-card-wrapper">
+          <div class="book-card">
+            <span class="book-badge-discount">25% OFF</span>
+            <div class="book-img-container">
+              <img src="{% static 'books/rama.png' %}" alt="Bhagavad Gita As It Is" class="book-img"
+                onerror="this.onerror=null; this.src='{{ default_cover }}';">
+            </div>
+            <div class="book-content">
+              <span class="book-category-tag">Holy Books</span>
+              <h4 class="book-card-title" title="Bhagavad Gita As It Is">Bhagavad Gita As It Is</h4>
+              <p class="book-author" title="A.C. Bhaktivedanta Swami">by A.C. Bhaktivedanta Swami</p>
+              <div class="rating-stars">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                  class="fas fa-star"></i><i class="fas fa-star"></i>
+                <span class="text-muted ms-1 small">(5.0)</span>
+              </div>
+              <div class="book-price-row">
+                <span class="book-current-price">₹299.00</span>
+                <span class="book-original-price">₹399.00</span>
+              </div>
+              <a href="{% url 'index' %}" class="btn-add-cart">
+                <i class="fa-solid fa-cart-plus"></i> Add to Cart
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 2 -->
+      <div class="col">
+        <div class="book-card-wrapper">
+          <div class="book-card">
+            <span class="book-badge-discount">20% OFF</span>
+            <div class="book-img-container">
+              <img src="{% static 'books/rama.png' %}" alt="The Holy Ramayana" class="book-img"
+                onerror="this.onerror=null; this.src='{{ default_cover }}';">
+            </div>
+            <div class="book-content">
+              <span class="book-category-tag">Holy Books</span>
+              <h4 class="book-card-title" title="The Holy Ramayana">The Holy Ramayana</h4>
+              <p class="book-author" title="Maharishi Valmiki">by Maharishi Valmiki</p>
+              <div class="rating-stars">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                  class="fas fa-star"></i><i class="fas fa-star"></i>
+                <span class="text-muted ms-1 small">(4.9)</span>
+              </div>
+              <div class="book-price-row">
+                <span class="book-current-price">₹349.00</span>
+                <span class="book-original-price">₹450.00</span>
+              </div>
+              <a href="{% url 'index' %}" class="btn-add-cart">
+                <i class="fa-solid fa-cart-plus"></i> Add to Cart
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 3 -->
+      <div class="col">
+        <div class="book-card-wrapper">
+          <div class="book-card">
+            <div class="book-img-container">
+              <img src="{% static 'books/rama.png' %}" alt="Principal Upanishads" class="book-img"
+                onerror="this.onerror=null; this.src='{{ default_cover }}';">
+            </div>
+            <div class="book-content">
+              <span class="book-category-tag">Holy Books</span>
+              <h4 class="book-card-title" title="Principal Upanishads">Principal Upanishads</h4>
+              <p class="book-author" title="S. Radhakrishnan">by S. Radhakrishnan</p>
+              <div class="rating-stars">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                  class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                <span class="text-muted ms-1 small">(4.8)</span>
+              </div>
+              <div class="book-price-row">
+                <span class="book-current-price">₹420.00</span>
+                <span class="book-original-price">₹550.00</span>
+              </div>
+              <a href="{% url 'index' %}" class="btn-add-cart">
+                <i class="fa-solid fa-cart-plus"></i> Add to Cart
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 4 -->
+      <div class="col">
+        <div class="book-card-wrapper">
+          <div class="book-card">
+            <span class="book-badge-discount">Bestseller</span>
+            <div class="book-img-container">
+              <img src="{% static 'books/rama.png' %}" alt="The Complete Mahabharata" class="book-img"
+                onerror="this.onerror=null; this.src='{{ default_cover }}';">
+            </div>
+            <div class="book-content">
+              <span class="book-category-tag">Holy Books</span>
+              <h4 class="book-card-title" title="The Complete Mahabharata">The Complete Mahabharata</h4>
+              <p class="book-author" title="C. Rajagopalachari">by C. Rajagopalachari</p>
+              <div class="rating-stars">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                  class="fas fa-star"></i><i class="fas fa-star"></i>
+                <span class="text-muted ms-1 small">(5.0)</span>
+              </div>
+              <div class="book-price-row">
+                <span class="book-current-price">₹499.00</span>
+                <span class="book-original-price">₹699.00</span>
+              </div>
+              <a href="{% url 'index' %}" class="btn-add-cart">
+                <i class="fa-solid fa-cart-plus"></i> Add to Cart
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Category Section: Sci-Fi & Fantasy -->
+  <div class="category-block mb-5" data-category="scifi">
+    <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom flex-wrap gap-2">
+      <div class="d-flex align-items-center gap-3">
+        <div class="brand-icon-box"
+          style="width: 44px; height: 44px; font-size: 1.15rem; background: linear-gradient(135deg, #6366f1, #4338ca); color: #fff; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+          <i class="fa-solid fa-robot"></i>
+        </div>
+        <div>
+          <h3 class="fw-bold mb-0 text-slate-900">Sci-Fi & Speculative Fiction</h3>
+          <p class="text-muted small mb-0">Intergalactic odysseys, cybernetic futures, and epic parallel universes</p>
+        </div>
+      </div>
+      <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-2">4 Titles
+        Available</span>
+    </div>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+      <!-- Item 1 -->
+      <div class="col">
+        <div class="book-card-wrapper">
+          <div class="book-card">
+            <span class="book-badge-discount" style="background: #6366f1;">Top Rated</span>
+            <div class="book-img-container">
+              <img src="{% static 'img/blog2.jpg' %}" alt="Chronicles of Neo-Earth" class="book-img"
+                onerror="this.onerror=null; this.src='{{ default_cover }}';">
+            </div>
+            <div class="book-content">
+              <span class="book-category-tag" style="color: #6366f1;">Sci-Fi</span>
+              <h4 class="book-card-title" title="Chronicles of Neo-Earth">Chronicles of Neo-Earth</h4>
+              <p class="book-author" title="Isaac Sterling">by Isaac Sterling</p>
+              <div class="rating-stars">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                  class="fas fa-star"></i><i class="fas fa-star"></i>
+                <span class="text-muted ms-1 small">(4.9)</span>
+              </div>
+              <div class="book-price-row">
+                <span class="book-current-price">₹380.00</span>
+                <span class="book-original-price">₹499.00</span>
+              </div>
+              <a href="{% url 'index' %}" class="btn-add-cart">
+                <i class="fa-solid fa-cart-plus"></i> Add to Cart
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 2 -->
+      <div class="col">
+        <div class="book-card-wrapper">
+          <div class="book-card">
+            <div class="book-img-container">
+              <img src="{% static 'img/blog3.jpg' %}" alt="Quantum Echoes & Algorithms" class="book-img"
+                onerror="this.onerror=null; this.src='{{ default_cover }}';">
+            </div>
+            <div class="book-content">
+              <span class="book-category-tag" style="color: #6366f1;">Sci-Fi</span>
+              <h4 class="book-card-title" title="Quantum Echoes & Algorithms">Quantum Echoes & Algorithms</h4>
+              <p class="book-author" title="Dr. Elena Vance">by Dr. Elena Vance</p>
+              <div class="rating-stars">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                  class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                <span class="text-muted ms-1 small">(4.7)</span>
+              </div>
+              <div class="book-price-row">
+                <span class="book-current-price">₹450.00</span>
+                <span class="book-original-price">₹599.00</span>
+              </div>
+              <a href="{% url 'index' %}" class="btn-add-cart">
+                <i class="fa-solid fa-cart-plus"></i> Add to Cart
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 3 -->
+      <div class="col">
+        <div class="book-card-wrapper">
+          <div class="book-card">
+            <span class="book-badge-discount" style="background: #6366f1;">New</span>
+            <div class="book-img-container">
+              <img src="{% static 'img/blog5.jpg' %}" alt="The Solar Sentinel" class="book-img"
+                onerror="this.onerror=null; this.src='{{ default_cover }}';">
+            </div>
+            <div class="book-content">
+              <span class="book-category-tag" style="color: #6366f1;">Sci-Fi</span>
+              <h4 class="book-card-title" title="The Solar Sentinel">The Solar Sentinel</h4>
+              <p class="book-author" title="Marcus Thorne">by Marcus Thorne</p>
+              <div class="rating-stars">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                  class="fas fa-star"></i><i class="fas fa-star"></i>
+                <span class="text-muted ms-1 small">(4.8)</span>
+              </div>
+              <div class="book-price-row">
+                <span class="book-current-price">₹320.00</span>
+                <span class="book-original-price">₹420.00</span>
+              </div>
+              <a href="{% url 'index' %}" class="btn-add-cart">
+                <i class="fa-solid fa-cart-plus"></i> Add to Cart
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 4 -->
+      <div class="col">
+        <div class="book-card-wrapper">
+          <div class="book-card">
+            <div class="book-img-container">
+              <img src="{% static 'img/blog2.jpg' %}" alt="Deep Space Protocol" class="book-img"
+                onerror="this.onerror=null; this.src='{{ default_cover }}';">
+            </div>
+            <div class="book-content">
+              <span class="book-category-tag" style="color: #6366f1;">Sci-Fi</span>
+              <h4 class="book-card-title" title="Deep Space Protocol">Deep Space Protocol</h4>
+              <p class="book-author" title="Roger Campbell">by Roger Campbell</p>
+              <div class="rating-stars">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                  class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                <span class="text-muted ms-1 small">(4.6)</span>
+              </div>
+              <div class="book-price-row">
+                <span class="book-current-price">₹290.00</span>
+                <span class="book-original-price">₹399.00</span>
+              </div>
+              <a href="{% url 'index' %}" class="btn-add-cart">
+                <i class="fa-solid fa-cart-plus"></i> Add to Cart
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock main %}
+
+{% block extra_js %}
+<script>
+  document.querySelectorAll('.category-filter-btn').forEach(button => {
+    button.addEventListener('click', function () {
+      document.querySelectorAll('.category-filter-btn').forEach(btn => {
+        btn.classList.remove('btn-success', 'active');
+        btn.classList.add('btn-outline-success');
+      });
+      this.classList.remove('btn-outline-success');
+      this.classList.add('btn-success', 'active');
+
+      const filter = this.getAttribute('data-filter');
+      document.querySelectorAll('.category-block').forEach(block => {
+        if (filter === 'all' || block.getAttribute('data-category') === filter) {
+          block.style.display = 'block';
+        } else {
+          block.style.display = 'none';
+        }
+      });
+    });
+  });
+</script>
+{% endblock %}

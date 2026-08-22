@@ -1,0 +1,7 @@
+Django==5.2
+django-crispy-forms==2.4
+crispy-bootstrap5==2025.6
+Pillow==11.3.0
+whitenoise==6.9.0
+gunicorn==23.0.0
+stripe==15.4.0

@@ -1,0 +1,118 @@
+{% extends 'adminbase.html' %}
+{% block admin %}
+{% load static %}
+
+<div class="container-fluid px-0 mb-5 pb-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h3 class="fw-bold text-slate-900 mb-1">Add Book to Catalog</h3>
+      <p class="text-muted small mb-0">Publish a new title, upload cover art, set pricing, and configure stock inventory</p>
+    </div>
+    <a href="{% url 'viewbook' %}" class="btn btn-outline-secondary rounded-pill px-4 fw-semibold">
+      <i class="ti ti-list me-1"></i> View All Books
+    </a>
+  </div>
+
+  <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white">
+    <form method="post" enctype="multipart/form-data" class="row g-4">
+      {% csrf_token %}
+
+      <!-- Book Title -->
+      <div class="col-md-6">
+        <label for="title" class="form-label fw-semibold text-slate-700">Book Title <span class="text-danger">*</span></label>
+        <div class="input-group">
+          <span class="input-group-text bg-light border-end-0 text-muted"><i class="ti ti-book"></i></span>
+          <input type="text" class="form-control form-control-lg bg-light border-start-0 fs-6" name="title" id="title" placeholder="e.g. Bhagavad Gita, Dune, Atomic Habits" required>
+        </div>
+      </div>
+
+      <!-- Author -->
+      <div class="col-md-6">
+        <label for="author" class="form-label fw-semibold text-slate-700">Author Name <span class="text-danger">*</span></label>
+        <div class="input-group">
+          <span class="input-group-text bg-light border-end-0 text-muted"><i class="ti ti-user-edit"></i></span>
+          <input type="text" class="form-control form-control-lg bg-light border-start-0 fs-6" name="author" id="author" placeholder="e.g. Maharishi Valmiki" required>
+        </div>
+      </div>
+
+      <!-- Category -->
+      <div class="col-md-6">
+        <label for="Category" class="form-label fw-semibold text-slate-700">Book Category <span class="text-danger">*</span></label>
+        <div class="input-group">
+          <span class="input-group-text bg-light border-end-0 text-muted"><i class="ti ti-category"></i></span>
+          <select class="form-select form-select-lg bg-light border-start-0 fs-6" name="Category" id="Category" required>
+            <option value="" selected disabled>--- Select Book Category ---</option>
+            {% for c in cats %}
+              <option value="{{ c.id }}">{{ c.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <!-- Language -->
+      <div class="col-md-6">
+        <label for="language" class="form-label fw-semibold text-slate-700">Language <span class="text-danger">*</span></label>
+        <div class="input-group">
+          <span class="input-group-text bg-light border-end-0 text-muted"><i class="ti ti-language"></i></span>
+          <input type="text" class="form-control form-control-lg bg-light border-start-0 fs-6" name="language" id="language" placeholder="English, Hindi, Sanskrit..." required>
+        </div>
+      </div>
+
+      <!-- Pricing: Tag Price & Selling Price -->
+      <div class="col-sm-6 col-md-3">
+        <label for="original_price" class="form-label fw-semibold text-slate-700">Tag / Original Price (₹) <span class="text-danger">*</span></label>
+        <div class="input-group">
+          <span class="input-group-text bg-light border-end-0 text-muted">₹</span>
+          <input type="number" class="form-control form-control-lg bg-light border-start-0 fs-6" name="original_price" id="original_price" placeholder="499" required>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-md-3">
+        <label for="price" class="form-label fw-semibold text-slate-700">Selling Price (₹) <span class="text-danger">*</span></label>
+        <div class="input-group">
+          <span class="input-group-text bg-light border-end-0 text-muted">₹</span>
+          <input type="number" class="form-control form-control-lg bg-light border-start-0 fs-6" name="price" id="price" placeholder="299" required>
+        </div>
+      </div>
+
+      <!-- Published Date -->
+      <div class="col-sm-6 col-md-3">
+        <label for="published_date" class="form-label fw-semibold text-slate-700">Publication Date <span class="text-danger">*</span></label>
+        <input type="date" class="form-control form-control-lg bg-light fs-6" name="published_date" id="published_date" required>
+      </div>
+
+      <!-- Stock Quantity -->
+      <div class="col-sm-6 col-md-3">
+        <label for="stock" class="form-label fw-semibold text-slate-700">Stock Inventory <span class="text-danger">*</span></label>
+        <div class="input-group">
+          <span class="input-group-text bg-light border-end-0 text-muted"><i class="ti ti-boxes"></i></span>
+          <input type="number" class="form-control form-control-lg bg-light border-start-0 fs-6" name="stock" id="stock" placeholder="50" required>
+        </div>
+      </div>
+
+      <!-- Cover Image -->
+      <div class="col-12">
+        <label for="cover_image" class="form-label fw-semibold text-slate-700">Upload Cover Artwork</label>
+        <input type="file" class="form-control form-control-lg bg-light fs-6" name="cover_image" id="cover_image" accept="image/*">
+        <small class="text-muted">High resolution portrait book cover recommended (JPG, PNG, WEBP)</small>
+      </div>
+
+      <!-- Description -->
+      <div class="col-12">
+        <label for="description" class="form-label fw-semibold text-slate-700">Book Description & Synopsis</label>
+        <textarea class="form-control bg-light fs-6" name="description" id="description" rows="4" placeholder="Comprehensive book synopsis, key themes, and features..."></textarea>
+      </div>
+
+      <div class="col-12 mt-4 pt-3 border-top d-flex gap-3">
+        <button type="submit" class="btn btn-success btn-lg rounded-pill px-5 fw-bold shadow-sm">
+          <i class="ti ti-check me-1"></i> Publish Book to Store
+        </button>
+        <a href="{% url 'viewbook' %}" class="btn btn-light btn-lg rounded-pill px-4 fw-semibold text-muted border">
+          Cancel
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,204 @@
+{% extends 'adminbase.html' %}
+{% load static %}
+{% block admin %}
+
+<div class="container-fluid px-0 mb-5 pb-4">
+  <!-- Page Header -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+      <div class="d-flex align-items-center gap-2">
+        <h3 class="fw-bold text-slate-900 mb-0">Customer Inquiries</h3>
+        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1 fw-semibold">
+          <i class="ti ti-mail me-1"></i> {{ enqs|length }} Total Messages
+        </span>
+      </div>
+      <p class="text-muted small mb-0 mt-1">Review, search, and respond to inquiries submitted by store visitors</p>
+    </div>
+
+    <!-- Live Search Box -->
+    <div class="position-relative" style="min-width: 280px; max-width: 380px;">
+      <i class="ti ti-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+      <input 
+        type="text" 
+        id="enquirySearch" 
+        class="form-control rounded-pill ps-5 pe-4 py-2 border shadow-none" 
+        placeholder="Filter by name, email, subject..."
+      >
+    </div>
+  </div>
+
+  <!-- Inquiries Table Card -->
+  <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0" id="enquiriesTable">
+        <thead class="bg-light border-bottom">
+          <tr>
+            <th class="py-3 px-4 text-uppercase text-muted small fw-bold" style="width: 60px;">#</th>
+            <th class="py-3 text-uppercase text-muted small fw-bold">Customer Name</th>
+            <th class="py-3 text-uppercase text-muted small fw-bold">Contact Details</th>
+            <th class="py-3 text-uppercase text-muted small fw-bold">Subject & Message</th>
+            <th class="py-3 text-uppercase text-muted small fw-bold text-center">Date Received</th>
+            <th class="py-3 px-4 text-uppercase text-muted small fw-bold text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for e in enqs %}
+          <tr class="enquiry-row">
+            <td class="py-3 px-4 text-muted fw-bold">{{ forloop.counter }}</td>
+            
+            <!-- Customer Avatar & Name -->
+            <td class="py-3">
+              <div class="d-flex align-items-center gap-2">
+                <img 
+                  src="https://ui-avatars.com/api/?name={{ e.name|urlencode }}&background=10b981&color=fff&size=80" 
+                  alt="{{ e.name }}" 
+                  class="rounded-circle border shadow-xs" 
+                  width="38" 
+                  height="38"
+                >
+                <div>
+                  <h6 class="fw-bold text-slate-900 mb-0 customer-name">{{ e.name }}</h6>
+                  <span class="text-muted" style="font-size: 0.72rem;">Customer</span>
+                </div>
+              </div>
+            </td>
+
+            <!-- Contact Details -->
+            <td class="py-3">
+              <div class="d-flex flex-column gap-1">
+                <a href="mailto:{{ e.email }}" class="text-decoration-none text-slate-800 small d-inline-flex align-items-center gap-1 customer-email hover-text-success">
+                  <i class="ti ti-mail text-success"></i> {{ e.email }}
+                </a>
+                <a href="tel:{{ e.contact_no }}" class="text-decoration-none text-muted small d-inline-flex align-items-center gap-1 customer-phone">
+                  <i class="ti ti-phone text-muted"></i> {{ e.contact_no }}
+                </a>
+              </div>
+            </td>
+
+            <!-- Subject & Message -->
+            <td class="py-3" style="max-width: 320px;">
+              <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2 py-1 mb-1 customer-subject">
+                {{ e.subject }}
+              </span>
+              <p class="text-slate-600 small mb-0 text-truncate customer-msg" style="max-width: 300px; line-height: 1.4;">
+                {{ e.message }}
+              </p>
+            </td>
+
+            <!-- Date -->
+            <td class="py-3 text-center text-muted small text-nowrap">
+              <i class="ti ti-calendar me-1 text-slate-400"></i> {{ e.enqdate|default:"Recently" }}
+            </td>
+
+            <!-- Actions -->
+            <td class="py-3 px-4 text-end text-nowrap">
+              <div class="d-inline-flex align-items-center gap-2">
+                <!-- Read Full Message Modal Trigger -->
+                <button 
+                  type="button" 
+                  class="btn btn-light btn-sm rounded-circle p-2 shadow-xs border" 
+                  title="Read Full Inquiry"
+                  data-bs-toggle="modal" 
+                  data-bs-target="#enquiryModal{{ e.id }}"
+                >
+                  <i class="ti ti-eye text-primary"></i>
+                </button>
+
+                <!-- Delete Inquiry -->
+                <a 
+                  href="{% url 'delenq' id=e.id %}" 
+                  class="btn btn-light btn-sm rounded-circle p-2 shadow-xs border text-danger" 
+                  title="Delete Inquiry" 
+                  onclick="return confirm('Are you sure you want to permanently delete this customer inquiry?');"
+                >
+                  <i class="ti ti-trash"></i>
+                </a>
+              </div>
+
+              <!-- Full Inquiry Modal -->
+              <div class="modal fade" id="enquiryModal{{ e.id }}" tabindex="-1" aria-labelledby="enquiryModalLabel{{ e.id }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content border-0 rounded-4 shadow-xl">
+                    <div class="modal-header border-bottom bg-light px-4 py-3">
+                      <h5 class="modal-title fw-bold text-slate-900" id="enquiryModalLabel{{ e.id }}">
+                        <i class="ti ti-mail text-success me-2"></i> Inquiry Details
+                      </h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-4 text-start">
+                      <!-- Sender Info -->
+                      <div class="d-flex align-items-center gap-3 p-3 bg-light rounded-3 mb-3 border">
+                        <img 
+                          src="https://ui-avatars.com/api/?name={{ e.name|urlencode }}&background=10b981&color=fff&size=100" 
+                          alt="{{ e.name }}" 
+                          class="rounded-circle border" 
+                          width="48" 
+                          height="48"
+                        >
+                        <div>
+                          <h6 class="fw-bold text-slate-900 mb-0">{{ e.name }}</h6>
+                          <div class="small text-muted">{{ e.email }} &bull; {{ e.contact_no }}</div>
+                          <div class="small text-slate-400 mt-1"><i class="ti ti-calendar me-1"></i> {{ e.enqdate|default:"Recently" }}</div>
+                        </div>
+                      </div>
+
+                      <!-- Subject -->
+                      <div class="mb-3">
+                        <label class="text-muted small fw-bold text-uppercase d-block mb-1">Subject</label>
+                        <div class="p-2 bg-white rounded-2 border fw-semibold text-slate-800">{{ e.subject }}</div>
+                      </div>
+
+                      <!-- Message Body -->
+                      <div class="mb-2">
+                        <label class="text-muted small fw-bold text-uppercase d-block mb-1">Customer Message</label>
+                        <div class="p-3 bg-white rounded-3 border text-slate-700" style="white-space: pre-line; line-height: 1.6; min-height: 100px;">
+                          {{ e.message }}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal-footer border-0 px-4 pb-4 pt-0 d-flex justify-content-between">
+                      <a href="mailto:{{ e.email }}?subject=Re: {{ e.subject|urlencode }}" class="btn btn-success rounded-pill px-4 fw-bold">
+                        <i class="ti ti-send me-1"></i> Reply via Email
+                      </a>
+                      <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </td>
+          </tr>
+          {% empty %}
+          <tr id="noDataRow">
+            <td colspan="6" class="text-center py-5">
+              <i class="ti ti-mail-opened fs-1 text-muted d-block mb-2"></i>
+              <p class="text-muted mb-0">No customer inquiries found.</p>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Live Instant Search Filter for Inquiries
+  document.getElementById('enquirySearch')?.addEventListener('input', function() {
+    const query = this.value.toLowerCase().trim();
+    const rows = document.querySelectorAll('.enquiry-row');
+    let visibleCount = 0;
+
+    rows.forEach(row => {
+      const text = row.innerText.toLowerCase();
+      if (text.includes(query)) {
+        row.style.display = '';
+        visibleCount++;
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  });
+</script>
+
+{% endblock %}

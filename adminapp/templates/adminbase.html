@@ -1,0 +1,377 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>{% block title %}Admin Portal - Book Walla{% endblock %}</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Template Icons & CSS -->
+  <link rel="stylesheet" href="{% static 'admin/assets/fonts/tabler-icons.min.css' %}">
+  <link rel="stylesheet" href="{% static 'admin/assets/fonts/feather.css' %}">
+  <link rel="stylesheet" href="{% static 'admin/assets/css/style.css' %}" id="main-style-link">
+  <link rel="stylesheet" href="{% static 'admin/assets/css/style-preset.css' %}">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+  <style>
+    :root {
+      --bs-border-radius-xl: 1rem !important;
+      --bs-border-radius-xxl: 1.5rem !important;
+      --bs-border-radius-lg: 0.75rem !important;
+    }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif !important;
+      background-color: #f8fafc !important;
+      color: #334155;
+      min-height: 100vh;
+    }
+    .card {
+      border-radius: 18px !important;
+      overflow: hidden;
+    }
+    .rounded-4 {
+      border-radius: 18px !important;
+    }
+    .rounded-5 {
+      border-radius: 24px !important;
+    }
+    .rounded-3 {
+      border-radius: 12px !important;
+    }
+    .brand-icon-box {
+      border-radius: 12px !important;
+    }
+    .pc-sidebar {
+      background: #0f172a !important;
+      border-right: 1px solid #1e293b !important;
+    }
+    .pc-sidebar .pc-link {
+      color: #94a3b8 !important;
+      font-weight: 600;
+      border-radius: 12px;
+      margin: 3px 12px;
+      padding: 10px 14px;
+      transition: all 0.25s ease;
+    }
+    .pc-sidebar .pc-link:hover, .pc-sidebar .pc-item.active .pc-link {
+      color: #ffffff !important;
+      background: #10b981 !important;
+      transform: translateX(3px);
+    }
+    .pc-sidebar .pc-link:hover .pc-micon i, .pc-sidebar .pc-item.active .pc-micon i {
+      color: #ffffff !important;
+    }
+    .pc-sidebar .pc-micon i {
+      color: #34d399;
+    }
+    .pc-sidebar .pc-caption label {
+      color: #64748b !important;
+    }
+    .pc-header {
+      background: rgba(255, 255, 255, 0.95) !important;
+      backdrop-filter: blur(12px) !important;
+      border-bottom: 1px solid #e2e8f0 !important;
+    }
+    .pc-container {
+      padding-top: 15px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .pc-content {
+      padding: 24px 28px 60px 28px !important;
+      flex: 1 0 auto;
+    }
+    /* Stat cards polish */
+    .stat-kpi-card {
+      border-radius: 18px !important;
+      padding: 1.5rem 1.6rem;
+      color: #ffffff;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.06);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .stat-kpi-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 30px -6px rgba(0, 0, 0, 0.12);
+    }
+    .stat-kpi-card.gradient-1 { background: linear-gradient(135deg, #10b981 0%, #047857 100%); }
+    .stat-kpi-card.gradient-2 { background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%); }
+    .stat-kpi-card.gradient-3 { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+    .stat-kpi-card.gradient-4 { background: linear-gradient(135deg, #f43f5e 0%, #be123c 100%); }
+    .stat-kpi-card.gradient-5 { background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%); }
+    .stat-kpi-card.gradient-6 { background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); }
+    .stat-icon {
+      font-size: 2.2rem;
+      opacity: 0.88;
+    }
+    .stat-value {
+      font-size: 1.85rem;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+    .admin-dash-footer {
+      background: #ffffff;
+      border-top: 1px solid #e2e8f0;
+      padding: 1.25rem 2rem;
+      margin-top: 2rem;
+    }
+    .hover-success:hover {
+      color: #10b981 !important;
+    }
+  </style>
+</head>
+
+<body data-pc-preset="preset-1" data-pc-direction="ltr" data-pc-theme="light">
+
+  <!-- Sidebar Menu -->
+  <nav class="pc-sidebar">
+    <div class="navbar-wrapper">
+      <div class="m-header p-3 d-flex align-items-center justify-content-between">
+        <a href="{% url 'index' %}" class="b-brand d-flex align-items-center gap-2 text-decoration-none">
+          <div class="brand-icon-box" style="width: 38px; height: 38px; font-size: 1rem; background: linear-gradient(135deg, #10b981, #059669);">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <div>
+            <h5 class="fw-bold text-white mb-0">Admin Panel</h5>
+            <span class="badge bg-success-subtle text-success small" style="font-size: 0.7rem;">Book Walla HQ</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="navbar-content">
+        <ul class="pc-navbar">
+          <li class="pc-item pc-caption">
+            <label class="text-uppercase fw-bold" style="font-size: 0.75rem; letter-spacing: 0.5px;">Main Overview</label>
+          </li>
+          
+          <li class="pc-item {% if request.resolver_match.url_name == 'admindash' %}active{% endif %}">
+            <a href="{% url 'admindash' %}" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
+              <span class="pc-mtext">Dashboard</span>
+            </a>
+          </li>
+
+          <li class="pc-item pc-caption">
+            <label class="text-uppercase fw-bold" style="font-size: 0.75rem; letter-spacing: 0.5px;">Store Management</label>
+          </li>
+
+          <!-- Categories Dropdown -->
+          <li class="pc-item pc-hasmenu {% if 'cat' in request.resolver_match.url_name %}active pc-trigger{% endif %}">
+            <a href="#!" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-category"></i></span>
+              <span class="pc-mtext">Categories</span>
+              <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+            </a>
+            <ul class="pc-submenu">
+              <li class="pc-item"><a class="pc-link" href="{% url 'addcat' %}">Add New Category</a></li>
+              <li class="pc-item"><a class="pc-link" href="{% url 'viewcat' %}">All Categories</a></li>
+            </ul>
+          </li>
+
+          <!-- Books Dropdown -->
+          <li class="pc-item pc-hasmenu {% if 'book' in request.resolver_match.url_name %}active pc-trigger{% endif %}">
+            <a href="#!" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-book"></i></span>
+              <span class="pc-mtext">Book Catalog</span>
+              <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+            </a>
+            <ul class="pc-submenu">
+              <li class="pc-item"><a class="pc-link" href="{% url 'addbook' %}">Add New Book</a></li>
+              <li class="pc-item"><a class="pc-link" href="{% url 'viewbook' %}">Manage Books</a></li>
+            </ul>
+          </li>
+
+          <!-- Orders -->
+          <li class="pc-item {% if request.resolver_match.url_name == 'adminorder' %}active{% endif %}">
+            <a href="{% url 'adminorder' %}" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-package"></i></span>
+              <span class="pc-mtext">Customer Orders</span>
+            </a>
+          </li>
+
+          <!-- Enquiries -->
+          <li class="pc-item {% if request.resolver_match.url_name == 'viewenq' %}active{% endif %}">
+            <a href="{% url 'viewenq' %}" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-mail"></i></span>
+              <span class="pc-mtext">Customer Inquiries</span>
+            </a>
+          </li>
+
+          <li class="pc-item pc-caption">
+            <label class="text-uppercase fw-bold" style="font-size: 0.75rem; letter-spacing: 0.5px;">Security & System</label>
+          </li>
+
+          <li class="pc-item {% if request.resolver_match.url_name == 'adminchangepwd' %}active{% endif %}">
+            <a href="{% url 'adminchangepwd' %}" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-lock"></i></span>
+              <span class="pc-mtext">Change Password</span>
+            </a>
+          </li>
+
+          <li class="pc-item">
+            <a href="{% url 'index' %}" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-home"></i></span>
+              <span class="pc-mtext">View Live Store</span>
+            </a>
+          </li>
+
+          <li class="pc-item">
+            <a href="{% url 'adminlogout' %}" class="pc-link text-danger">
+              <span class="pc-micon"><i class="ti ti-power text-danger"></i></span>
+              <span class="pc-mtext text-danger">Logout Admin</span>
+            </a>
+          </li>
+
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="pc-header">
+    <div class="header-wrapper">
+      <div class="me-auto pc-mob-drp">
+        <ul class="list-unstyled d-flex align-items-center mb-0">
+          <li class="pc-h-item pc-sidebar-collapse">
+            <a href="#" class="pc-head-link ms-0" id="sidebar-hide">
+              <i class="ti ti-menu-2 fs-4"></i>
+            </a>
+          </li>
+          <li class="pc-h-item pc-sidebar-popup">
+            <a href="#" class="pc-head-link ms-0" id="mobile-collapse">
+              <i class="ti ti-menu-2 fs-4"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="ms-auto">
+        <ul class="list-unstyled d-flex align-items-center mb-0 gap-2">
+          
+          <li class="d-none d-sm-block">
+            <a href="{% url 'index' %}" class="btn btn-outline-success btn-sm rounded-pill px-3 fw-semibold">
+              <i class="fa-solid fa-globe me-1"></i> Live Storefront
+            </a>
+          </li>
+
+          <li class="dropdown pc-h-item header-user-profile">
+            <a class="pc-head-link dropdown-toggle arrow-none me-0 d-flex align-items-center gap-2 px-3 py-2 rounded-pill bg-light border" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" data-bs-auto-close="outside" aria-expanded="false">
+              <img src="https://ui-avatars.com/api/?name=Admin&background=064e3b&color=fff" alt="Admin Avatar" class="rounded-circle border border-success" width="34" height="34">
+              <div class="d-none d-md-block text-start lh-1">
+                <span class="d-block fw-bold text-slate-900 small">Administrator</span>
+                <span class="text-success" style="font-size: 0.72rem;">Master HQ</span>
+              </div>
+              <i class="ti ti-chevron-down text-muted ms-1 small"></i>
+            </a>
+            
+            <div class="dropdown-menu dropdown-menu-end luxury-profile-dropdown shadow-xl">
+              <!-- Admin Header Card -->
+              <div class="profile-popup-header d-flex align-items-center gap-3">
+                <div class="brand-icon-box" style="width: 44px; height: 44px; font-size: 1.1rem; background: linear-gradient(135deg, #064e3b, #0f172a);">
+                  <i class="fa-solid fa-shield-halved text-white"></i>
+                </div>
+                <div>
+                  <h6 class="fw-bold text-slate-900 mb-0">Master Administrator</h6>
+                  <span class="badge bg-success text-white rounded-pill px-2 py-0" style="font-size: 0.68rem;">Full Access</span>
+                </div>
+              </div>
+
+              <!-- Menu Items -->
+              <div class="d-flex flex-column gap-1">
+                <a href="{% url 'adminchangepwd' %}" class="dropdown-item-custom">
+                  <div class="icon-box-mini bg-success-subtle text-success">
+                    <i class="ti ti-lock"></i>
+                  </div>
+                  <span>Change Password</span>
+                </a>
+
+                <a href="{% url 'admindash' %}" class="dropdown-item-custom">
+                  <div class="icon-box-mini bg-primary-subtle text-primary">
+                    <i class="ti ti-dashboard"></i>
+                  </div>
+                  <span>Admin Dashboard</span>
+                </a>
+
+                <a href="{% url 'index' %}" class="dropdown-item-custom">
+                  <div class="icon-box-mini bg-light text-secondary">
+                    <i class="ti ti-home"></i>
+                  </div>
+                  <span>Live Storefront</span>
+                </a>
+
+                <hr class="my-1 border-slate-200">
+
+                <a href="{% url 'adminlogout' %}" class="dropdown-item-custom text-danger">
+                  <div class="icon-box-mini bg-danger-subtle text-danger">
+                    <i class="ti ti-power"></i>
+                  </div>
+                  <span class="fw-bold">Sign Out Admin</span>
+                </a>
+              </div>
+
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <!-- Admin Main Content Container -->
+  <div class="pc-container">
+    <div class="pc-content">
+      
+      <!-- Messages -->
+      {% if messages %}
+        <div class="my-3">
+          {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags|default:'success' }}{% endif %} alert-dismissible fade show rounded-4 shadow-sm border-0 d-flex align-items-center justify-content-between" role="alert">
+              <div class="d-flex align-items-center gap-2">
+                <i class="fa-solid {% if message.tags == 'error' %}fa-circle-exclamation text-danger{% else %}fa-circle-check text-success{% endif %} fs-5"></i>
+                <span>{{ message }}</span>
+              </div>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% block admin %}
+      {% endblock %}
+    </div>
+
+    <!-- Admin Dashboard Footer -->
+    <footer class="admin-dash-footer">
+      <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
+        <p class="mb-0 text-muted small">© 2026 <strong class="text-slate-800">Book Walla</strong> &bull; Administrative Control Center</p>
+        <div class="d-flex align-items-center gap-3">
+          <a href="{% url 'index' %}" class="text-decoration-none text-muted hover-success small">Live Storefront</a>
+          <span class="text-slate-300">•</span>
+          <a href="{% url 'admindash' %}" class="text-decoration-none text-muted hover-success small">Admin Dashboard</a>
+          <span class="text-slate-300">•</span>
+          <a href="{% url 'adminorder' %}" class="text-decoration-none text-muted hover-success small">Customer Orders</a>
+          <span class="text-slate-300">•</span>
+          <a href="{% url 'viewbook' %}" class="text-decoration-none text-muted hover-success small">Book Catalog</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="{% static 'admin/assets/js/plugins/popper.min.js' %}"></script>
+  <script src="{% static 'admin/assets/js/plugins/simplebar.min.js' %}"></script>
+  <script src="{% static 'admin/assets/js/plugins/bootstrap.min.js' %}"></script>
+  <script src="{% static 'admin/assets/js/pcoded.js' %}"></script>
+  <script src="{% static 'admin/assets/js/plugins/feather.min.js' %}"></script>
+</body>
+
+</html>

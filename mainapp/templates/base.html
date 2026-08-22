@@ -1,0 +1,287 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Book Walla - Online Bookstore{% endblock %}</title>
+
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Core & Custom CSS -->
+  <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+  <link rel="stylesheet" href="{% static 'css/splide.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+  <div class="container-xl py-3 px-3 px-md-4">
+
+    <!-- Top Floating Navbar -->
+    <header class="top-navbar sticky-top d-flex align-items-center justify-content-between flex-wrap gap-3">
+      <!-- Brand Logo -->
+      <a class="navbar-brand-wrapper" href="{% url 'index' %}">
+        <div class="brand-icon-box">
+          <i class="fa-solid fa-book-open-reader"></i>
+        </div>
+        <h1 class="brand-text">Book Walla</h1>
+      </a>
+
+      <!-- Global Search Form -->
+      <form class="search-form-wrapper" role="search" method="get" action="{% url 'category' %}">
+        <i class="fa-solid fa-magnifying-glass search-icon-inside"></i>
+        <input class="search-input-custom" type="search" name="q" placeholder="Search by title, author, or category..." aria-label="Search">
+      </form>
+
+      <!-- Action Items & User Menu -->
+      <div class="d-flex align-items-center gap-2 gap-sm-3">
+        <!-- Wishlist Shortcut -->
+        <a href="{% url 'category' %}" class="nav-action-btn d-none d-sm-flex" title="Wishlist">
+          <i class="fa-regular fa-heart"></i>
+        </a>
+
+        <!-- Cart Shortcut -->
+        <a href="{% url 'viewcart' %}" class="nav-action-btn" title="View Cart">
+          <i class="fa-solid fa-cart-shopping"></i>
+        </a>
+
+        <!-- User Authentication Area -->
+        {% if userid or user %}
+        <div class="dropdown">
+          <button class="user-pill-btn dropdown-toggle border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            {% if user and user.profile %}
+              <img src="{{ user.profile.url }}" class="user-avatar-sm" alt="Profile" onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name={{ user.name|default:userid|urlencode }}&background=10b981&color=fff';" />
+            {% else %}
+              <img src="https://ui-avatars.com/api/?name={{ user.name|default:userid|urlencode }}&background=10b981&color=fff" class="user-avatar-sm" alt="Profile" />
+            {% endif %}
+            <span class="d-none d-md-inline">{{ user.name|default:userid }}</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-4 p-2 mt-2" style="min-width: 220px;">
+            <li class="px-3 py-2 border-bottom mb-2 bg-light rounded-3">
+              <div class="fw-bold text-slate-900">{{ user.name|default:"Reader" }}</div>
+              <div class="small text-muted text-truncate">{{ user.email|default:userid }}</div>
+            </li>
+            <li>
+              <a class="dropdown-item rounded-3 py-2 fw-semibold" href="{% url 'userdash' %}">
+                <i class="fa-solid fa-gauge-high text-success me-2"></i> Dashboard
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item rounded-3 py-2 fw-semibold" href="{% url 'viewcart' %}">
+                <i class="fa-solid fa-bag-shopping text-success me-2"></i> My Cart
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item rounded-3 py-2 fw-semibold" href="{% url 'userprofile' %}">
+                <i class="fa-solid fa-user-gear text-success me-2"></i> Profile Settings
+              </a>
+            </li>
+            <li><hr class="dropdown-divider my-1"></li>
+            <li>
+              <a class="dropdown-item rounded-3 py-2 fw-semibold text-danger" href="{% url 'userlogout' %}">
+                <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
+              </a>
+            </li>
+          </ul>
+        </div>
+        {% else %}
+        <div class="d-flex align-items-center gap-2">
+          <a href="{% url 'login' %}" class="btn btn-outline-success rounded-pill px-3 py-2 fw-semibold btn-sm">
+            <i class="fa-solid fa-arrow-right-to-bracket me-1"></i> Sign In
+          </a>
+          <a href="{% url 'register' %}" class="btn btn-success rounded-pill px-3 py-2 fw-semibold btn-sm d-none d-sm-inline-block">
+            Sign Up
+          </a>
+        </div>
+        {% endif %}
+      </div>
+    </header>
+
+    <!-- Main Navigation Bar -->
+    <nav class="navbar navbar-expand-lg main-navbar">
+      <div class="container-fluid px-0">
+        <a class="navbar-brand fw-bold text-success d-lg-none" href="{% url 'index' %}">
+          <i class="fa-solid fa-compass me-1"></i> Explore Store
+        </a>
+        <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbarMenu"
+          aria-controls="mainNavbarMenu" aria-expanded="false" aria-label="Toggle navigation">
+          <i class="fa-solid fa-bars-staggered text-success fs-4"></i>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNavbarMenu">
+          <ul class="navbar-nav mx-auto align-items-center py-2 py-lg-0 gap-1">
+            <li class="nav-item">
+              <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" href="{% url 'index' %}">
+                <i class="fa-solid fa-house"></i> Home
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if request.resolver_match.url_name == 'category' %}active{% endif %}" href="{% url 'category' %}">
+                <i class="fa-solid fa-layer-group"></i> All Categories
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="{% url 'about' %}">
+                <i class="fa-solid fa-circle-info"></i> About Us
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" href="{% url 'contact' %}">
+                <i class="fa-solid fa-envelope"></i> Contact Us
+              </a>
+            </li>
+            {% if not userid %}
+            <li class="nav-item">
+              <a class="nav-link {% if request.resolver_match.url_name == 'register' %}active{% endif %}" href="{% url 'register' %}">
+                <i class="fa-solid fa-user-plus"></i> Join Us
+              </a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Global Django Messages -->
+    {% if messages %}
+    <div class="my-3">
+      {% for message in messages %}
+      <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags|default:'success' }}{% endif %} alert-dismissible fade show rounded-4 shadow-sm border-0 d-flex align-items-center justify-content-between" role="alert">
+        <div class="d-flex align-items-center gap-2">
+          <i class="fa-solid {% if message.tags == 'error' %}fa-circle-exclamation text-danger{% else %}fa-circle-check text-success{% endif %} fs-5"></i>
+          <span>{{ message }}</span>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Page Content Block -->
+    <main>
+      {% block main %}
+      {% endblock main %}
+    </main>
+
+    <!-- Site Footer -->
+    <footer class="site-footer">
+      <div class="container-fluid">
+        <div class="row g-4">
+          <!-- Column 1: Brand & Bio -->
+          <div class="col-lg-4 col-md-6 footer-col">
+            <div class="d-flex align-items-center gap-2 mb-3">
+              <div class="brand-icon-box" style="width: 36px; height: 36px; font-size: 1rem;">
+                <i class="fa-solid fa-book-open"></i>
+              </div>
+              <h3 class="text-white fw-bold mb-0">Book Walla</h3>
+            </div>
+            <p class="text-slate-400" style="font-size: 0.95rem; line-height: 1.6;">
+              Your premier destination for inspiring literature, holy scriptures, academic texts, and timeless bestsellers. Empowering minds across the globe.
+            </p>
+            <div class="footer-social-links">
+              <a href="#" class="social-btn" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+              <a href="#" class="social-btn" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+              <a href="#" class="social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+              <a href="#" class="social-btn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+              <a href="#" class="social-btn" aria-label="GitHub"><i class="fab fa-github"></i></a>
+            </div>
+          </div>
+
+          <!-- Column 2: Quick Links -->
+          <div class="col-lg-2 col-md-6 footer-col">
+            <h4>Quick Links</h4>
+            <ul class="footer-links">
+              <li><a href="{% url 'index' %}"><i class="fas fa-chevron-right fs-xs"></i> Home</a></li>
+              <li><a href="{% url 'category' %}"><i class="fas fa-chevron-right fs-xs"></i> Categories</a></li>
+              <li><a href="{% url 'about' %}"><i class="fas fa-chevron-right fs-xs"></i> About Us</a></li>
+              <li><a href="{% url 'contact' %}"><i class="fas fa-chevron-right fs-xs"></i> Contact Us</a></li>
+              <li><a href="{% url 'register' %}"><i class="fas fa-chevron-right fs-xs"></i> Register</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 3: Customer Care -->
+          <div class="col-lg-3 col-md-6 footer-col">
+            <h4>Customer Support</h4>
+            <ul class="footer-links">
+              <li><a href="{% url 'userdash' %}"><i class="fas fa-chevron-right fs-xs"></i> Account Dashboard</a></li>
+              <li><a href="{% url 'viewcart' %}"><i class="fas fa-chevron-right fs-xs"></i> Shopping Cart</a></li>
+              <li><a href="{% url 'adminlogin' %}"><i class="fas fa-lock fs-xs"></i> Admin Portal</a></li>
+              <li><a href="#"><i class="fas fa-shield-halved fs-xs"></i> Privacy Policy</a></li>
+              <li><a href="#"><i class="fas fa-truck fs-xs"></i> Shipping & Returns</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 4: Contact & Location -->
+          <div class="col-lg-3 col-md-6 footer-col">
+            <h4>Get In Touch</h4>
+            <p class="mb-2"><i class="fas fa-map-marker-alt text-success me-2"></i> 60 Feet Road, Jankipuram Ext., Lucknow, India</p>
+            <p class="mb-2"><i class="fas fa-phone text-success me-2"></i> +91 6392854273</p>
+            <p class="mb-3"><i class="fas fa-envelope text-success me-2"></i> support@bookwalla.com</p>
+            <img src="{% static 'img/worldmap.png' %}" alt="Global Shipping Map" class="img-fluid rounded-3 opacity-75" style="max-height: 80px; object-fit: cover;">
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <p class="mb-0">
+            &copy; 2026 <span>Book Walla</span>. All Rights Reserved. Crafted with passion by <span>Akash Chauhan</span>.
+          </p>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- JavaScript Libraries -->
+  <script src="{% static 'js/bootstrap.bundle.js' %}"></script>
+  <script src="{% static 'js/splide.min.js' %}"></script>
+
+  <!-- Splide Sliders Initializer -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var featuredEl = document.getElementById('featured');
+      if (featuredEl) {
+        new Splide('#featured', {
+          type: 'loop',
+          perPage: 4,
+          perMove: 1,
+          gap: '1.5rem',
+          autoplay: true,
+          interval: 3500,
+          pauseOnHover: true,
+          pagination: false,
+          breakpoints: {
+            1200: { perPage: 3 },
+            768: { perPage: 2 },
+            576: { perPage: 1 }
+          }
+        }).mount();
+      }
+
+      var arrivalsEl = document.getElementById('new_arrivals');
+      if (arrivalsEl) {
+        new Splide('#new_arrivals', {
+          type: 'loop',
+          perPage: 3,
+          perMove: 1,
+          gap: '1.5rem',
+          autoplay: true,
+          interval: 4000,
+          pauseOnHover: true,
+          pagination: false,
+          breakpoints: {
+            992: { perPage: 2 },
+            600: { perPage: 1 }
+          }
+        }).mount();
+      }
+    });
+  </script>
+  {% block extra_js %}{% endblock %}
+</body>
+
+</html>

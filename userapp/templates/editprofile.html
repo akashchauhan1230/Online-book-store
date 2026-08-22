@@ -1,0 +1,68 @@
+{% extends 'userbase.html' %}
+{% block user %}
+
+<div class="container-fluid px-0 mb-5 pb-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h3 class="fw-bold text-slate-900 mb-1">Edit Profile</h3>
+      <p class="text-muted small mb-0">Update your personal contact details, profile image, and delivery address</p>
+    </div>
+    <a href="{% url 'userprofile' %}" class="btn btn-outline-secondary rounded-pill px-4 fw-semibold">
+      <i class="ti ti-arrow-left me-1"></i> Back to Profile
+    </a>
+  </div>
+
+  <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white">
+    <form method="post" enctype="multipart/form-data" class="row g-4">
+      {% csrf_token %}
+
+      <div class="col-md-6">
+        <label for="name" class="form-label fw-semibold text-slate-700">Full Name <span class="text-danger">*</span></label>
+        <div class="input-group">
+          <span class="input-group-text bg-light border-end-0 text-muted"><i class="ti ti-user"></i></span>
+          <input type="text" name="name" value="{{ user.name }}" id="name" class="form-control form-control-lg bg-light border-start-0 fs-6" required>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label for="contactno" class="form-label fw-semibold text-slate-700">Contact Number <span class="text-danger">*</span></label>
+        <div class="input-group">
+          <span class="input-group-text bg-light border-end-0 text-muted"><i class="ti ti-phone"></i></span>
+          <input type="text" name="contactno" value="{{ user.contactno }}" id="contactno" class="form-control form-control-lg bg-light border-start-0 fs-6" required>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label for="email" class="form-label fw-semibold text-slate-700">Registered Email Address (Locked)</label>
+        <div class="input-group">
+          <span class="input-group-text bg-light border-end-0 text-muted"><i class="ti ti-mail"></i></span>
+          <input type="text" name="email" value="{{ user.email }}" id="email" class="form-control form-control-lg bg-light border-start-0 fs-6" disabled>
+        </div>
+        <small class="text-muted">Email is linked to your account ID and cannot be changed.</small>
+      </div>
+
+      <div class="col-md-6">
+        <label for="profile" class="form-label fw-semibold text-slate-700">Upload Profile Picture</label>
+        <input type="file" name="profile" id="profile" class="form-control form-control-lg bg-light fs-6" accept="image/*">
+        <small class="text-muted">Supported formats: JPG, PNG, WEBP (Max 5MB)</small>
+      </div>
+
+      <div class="col-12">
+        <label for="address" class="form-label fw-semibold text-slate-700">Default Shipping & Delivery Address</label>
+        <textarea name="address" id="address" class="form-control bg-light fs-6" rows="4" placeholder="Enter house no, street, locality, city, state, pin code...">{{ user.address }}</textarea>
+      </div>
+
+      <div class="col-12 mt-4 pt-3 border-top d-flex gap-3">
+        <button type="submit" class="btn btn-success btn-lg rounded-pill px-5 fw-bold shadow-sm">
+          <i class="ti ti-device-floppy me-1"></i> Save Changes
+        </button>
+        <a href="{% url 'userprofile' %}" class="btn btn-light btn-lg rounded-pill px-4 fw-semibold text-muted border">
+          Cancel
+        </a>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+{% endblock %}

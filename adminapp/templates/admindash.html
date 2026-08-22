@@ -1,0 +1,236 @@
+{% extends 'adminbase.html' %}
+{% block admin %}
+
+<div class="container-fluid px-0 mb-5 pb-4">
+  <!-- Dashboard Top Header -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+      <h3 class="fw-bold text-slate-900 mb-1">Administrative Overview</h3>
+      <p class="text-muted small mb-0">Real-time live performance metrics, catalog statistics, and bookstore activity</p>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+      <a href="{% url 'addbook' %}" class="btn btn-success rounded-pill px-4 py-2 fw-bold shadow-sm">
+        <i class="ti ti-plus me-1"></i> Add New Book
+      </a>
+      <a href="{% url 'addcat' %}" class="btn btn-outline-success rounded-pill px-3 py-2 fw-semibold">
+        <i class="ti ti-folder-plus me-1"></i> Add Category
+      </a>
+    </div>
+  </div>
+
+  <!-- KPI Metric Cards Grid (Live updated from database) -->
+  <div class="row g-3 g-md-4 mb-4">
+    
+    <!-- Total Users -->
+    <div class="col-sm-6 col-xl-4">
+      <div class="stat-kpi-card gradient-1" style="border-radius: 16px !important;">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <p class="text-white-50 small mb-1 fw-bold text-uppercase">Registered Users</p>
+            <h2 class="stat-value text-white mb-1">{{ user_count|default:"0" }}</h2>
+            <span class="badge bg-white text-success rounded-pill small fw-bold px-2 py-1">
+              <i class="ti ti-users me-1"></i> Active Readers
+            </span>
+          </div>
+          <div class="stat-icon">
+            <i class="ti ti-users"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Books -->
+    <div class="col-sm-6 col-xl-4">
+      <div class="stat-kpi-card gradient-2" style="border-radius: 16px !important;">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <p class="text-white-50 small mb-1 fw-bold text-uppercase">Catalog Books</p>
+            <h2 class="stat-value text-white mb-1">{{ book_count|default:"0" }}</h2>
+            <span class="badge bg-white text-primary rounded-pill small fw-bold px-2 py-1">
+              <i class="ti ti-book me-1"></i> In Inventory
+            </span>
+          </div>
+          <div class="stat-icon">
+            <i class="ti ti-book-2"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Orders -->
+    <div class="col-sm-6 col-xl-4">
+      <div class="stat-kpi-card gradient-3" style="border-radius: 16px !important;">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <p class="text-white-50 small mb-1 fw-bold text-uppercase">Customer Orders</p>
+            <h2 class="stat-value text-white mb-1">{{ order_count|default:"0" }}</h2>
+            <span class="badge bg-white text-warning rounded-pill small fw-bold px-2 py-1">
+              <i class="ti ti-package me-1"></i> Orders Placed
+            </span>
+          </div>
+          <div class="stat-icon">
+            <i class="ti ti-shopping-bag"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Categories -->
+    <div class="col-sm-6 col-xl-4">
+      <div class="stat-kpi-card gradient-5" style="border-radius: 16px !important;">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <p class="text-white-50 small mb-1 fw-bold text-uppercase">Active Categories</p>
+            <h2 class="stat-value text-white mb-1">{{ category_count|default:"0" }}</h2>
+            <span class="badge bg-white text-info rounded-pill small fw-bold px-2 py-1">
+              <i class="ti ti-layout-grid me-1"></i> Genres / Divisions
+            </span>
+          </div>
+          <div class="stat-icon">
+            <i class="ti ti-category-2"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Support Inquiries -->
+    <div class="col-sm-6 col-xl-4">
+      <div class="stat-kpi-card gradient-4" style="border-radius: 16px !important;">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <p class="text-white-50 small mb-1 fw-bold text-uppercase">Support Inquiries</p>
+            <h2 class="stat-value text-white mb-1">{{ enquiry_count|default:"0" }}</h2>
+            <span class="badge bg-white text-danger rounded-pill small fw-bold px-2 py-1">
+              <i class="ti ti-mail me-1"></i> Messages Received
+            </span>
+          </div>
+          <div class="stat-icon">
+            <i class="ti ti-message-dots"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Revenue -->
+    <div class="col-sm-6 col-xl-4">
+      <div class="stat-kpi-card gradient-6" style="border-radius: 16px !important;">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <p class="text-white-50 small mb-1 fw-bold text-uppercase">Total Sales Revenue</p>
+            <h2 class="stat-value text-white mb-1">₹{{ total_revenue|floatformat:2 }}</h2>
+            <span class="badge bg-white text-dark rounded-pill small fw-bold px-2 py-1">
+              <i class="ti ti-coin me-1"></i> Completed Orders
+            </span>
+          </div>
+          <div class="stat-icon">
+            <i class="ti ti-wallet"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Recent Orders Table Section -->
+  <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white mb-4" style="border-radius: 16px !important; border: 1px solid #e2e8f0 !important;">
+    <div class="card-header bg-white py-3 px-4 d-flex justify-content-between align-items-center border-bottom">
+      <div class="d-flex align-items-center gap-2">
+        <div class="brand-icon-box" style="width: 36px; height: 36px; font-size: 1rem; background: #ecfdf5; color: #10b981; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+          <i class="ti ti-shopping-cart"></i>
+        </div>
+        <h5 class="fw-bold text-slate-900 mb-0">Recent Customer Orders</h5>
+      </div>
+      <a href="{% url 'adminorder' %}" class="btn btn-sm btn-outline-success rounded-pill px-3 fw-semibold">
+        View All Orders <i class="ti ti-arrow-right ms-1"></i>
+      </a>
+    </div>
+    
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="bg-light">
+          <tr>
+            <th class="py-3 px-4 text-muted small fw-bold">ORDER ID</th>
+            <th class="py-3 text-muted small fw-bold">CUSTOMER</th>
+            <th class="py-3 text-muted small fw-bold">DATE</th>
+            <th class="py-3 text-muted small fw-bold">TOTAL AMOUNT</th>
+            <th class="py-3 text-muted small fw-bold text-center">STATUS</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for o in orders %}
+          <tr>
+            <td class="px-4 py-3 fw-bold text-slate-900">#ORD-{{ o.id }}</td>
+            <td class="py-3">
+              <div class="d-flex align-items-center gap-2">
+                <img src="https://ui-avatars.com/api/?name={{ o.user.name|urlencode }}&background=10b981&color=fff&size=60" class="rounded-circle border" width="30" height="30" alt="{{ o.user.name }}">
+                <span class="fw-semibold text-slate-800">{{ o.user.name }}</span>
+              </div>
+            </td>
+            <td class="py-3 text-muted small">{{ o.ordered_at|date:"d M Y, h:i A" }}</td>
+            <td class="py-3 fw-bold text-success">₹{{ o.total_amount }}</td>
+            <td class="py-3 text-center">
+              <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1">
+                Completed
+              </span>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="5" class="text-center py-4 text-muted">
+              <i class="ti ti-package-off fs-2 d-block mb-1 opacity-50"></i>
+              No orders placed yet.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Quick Management Hub -->
+  <div class="row g-4 mb-4">
+    <div class="col-lg-6">
+      <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100" style="border-radius: 16px !important; border: 1px solid #e2e8f0 !important;">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold text-slate-900 mb-0"><i class="ti ti-tools text-success me-2"></i> Quick Store Operations</h5>
+        </div>
+        <p class="text-muted small mb-4">Fast shortcuts to update catalog books, manage categories, track orders, and respond to inquiries.</p>
+        
+        <div class="d-grid gap-2 d-sm-flex flex-wrap">
+          <a href="{% url 'viewbook' %}" class="btn btn-light rounded-pill border px-4 py-2 fw-semibold text-slate-800">
+            <i class="ti ti-list text-success me-1"></i> All Books
+          </a>
+          <a href="{% url 'viewcat' %}" class="btn btn-light rounded-pill border px-4 py-2 fw-semibold text-slate-800">
+            <i class="ti ti-folder text-primary me-1"></i> All Categories
+          </a>
+          <a href="{% url 'adminorder' %}" class="btn btn-light rounded-pill border px-4 py-2 fw-semibold text-slate-800">
+            <i class="ti ti-package text-warning me-1"></i> Orders
+          </a>
+          <a href="{% url 'viewenq' %}" class="btn btn-light rounded-pill border px-4 py-2 fw-semibold text-slate-800">
+            <i class="ti ti-mail text-danger me-1"></i> Customer Inquiries
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100" style="border-radius: 16px !important; border: 1px solid #e2e8f0 !important;">
+        <h5 class="fw-bold text-slate-900 mb-2"><i class="ti ti-shield-lock text-success me-2"></i> Security & Master Profile</h5>
+        <p class="text-muted small mb-4">You are logged in with master administrator privileges. Ensure password rotation periodically.</p>
+        
+        <div class="d-flex align-items-center justify-content-between p-3 bg-light rounded-3 border">
+          <div>
+            <h6 class="fw-bold mb-0 text-slate-900">Administrator Security</h6>
+            <span class="text-muted small">Update your login credentials securely</span>
+          </div>
+          <a href="{% url 'adminchangepwd' %}" class="btn btn-outline-success btn-sm rounded-pill px-3 fw-bold">
+            Change Password
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}
